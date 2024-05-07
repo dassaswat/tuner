@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/tuner.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tuner - The Intuitive Playlist Optimizer for Music Lovers</title>
+    <meta
+      name="title"
+      content="Tuner - The Intuitive Playlist Optimizer for Music Lovers"
+    />
+    <meta
+      name="description"
+      content="Listening to music should be a seamless, enjoyable experience - but random playlists can really kill the vibe. That's where Tuner comes in. Tuner is the clever Spotify enhancer that creates flowing playlists perfectly suited to your taste. It simply analyzes the music you already love, then assembles new playlists by stringing together similar songs in an order that just feels right."
+    />
+    <meta name="keywords" content="Spotify, Playlist, Music, Tuner" />
+    <link rel="canonical" href="" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="./public/tuner-og.png" />
+    <meta
+      property="og:title"
+      content="Tuner - The Intuitive Playlist Optimizer for Music Lovers"
+    />
+    <meta
+      property="og:description"
+      content="Listening to music should be a seamless, enjoyable experience - but random playlists can really kill the vibe. That's where Tuner comes in. Tuner is the clever Spotify enhancer that creates flowing playlists perfectly suited to your taste. It simply analyzes the music you already love, then assembles new playlists by stringing together similar songs in an order that just feels right."
+    />
+    <meta property="og:image" content="./public/tuner-og.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://metatags.io/" />
+    <meta
+      property="twitter:title"
+      content="Tuner - The Intuitive Playlist Optimizer for Music Lovers"
+    />
+    <meta
+      property="twitter:description"
+      content="Listening to music should be a seamless, enjoyable experience - but random playlists can really kill the vibe. That's where Tuner comes in. Tuner is the clever Spotify enhancer that creates flowing playlists perfectly suited to your taste. It simply analyzes the music you already love, then assembles new playlists by stringing together similar songs in an order that just feels right."
+    />
+    <meta property="twitter:image" content="./public/tuner-og.png" />
+    <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+      integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://kit.fontawesome.com/e6ea06a609.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body class="min-h-screen antialiased">
+    <div class="flex min-h-screen flex-col bg-[#0c0a09] text-white">
+      <div class="mx-12 mt-12 md:mx-24 md:mt-24 lg:mx-32 xl:mx-40">
+        <header id="header"></header>
+        <hr class="mb-5 w-full border-[#1c1917] md:mb-10" />
+        <!-- Main Content  -->
+        <main id="main"></main>
+        <!-- Notification Card -->
+        <div
+          id="notification"
+          class="fixed inset-x-0 top-0 z-50 mx-auto max-w-xs -translate-y-full transform rounded-lg p-4 opacity-0 shadow-lg transition-all duration-500 ease-in-out"
+        ></div>
+        <!-- Footer -->
+        <footer>
+          <div
+            class="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0"
+          >
+            <div
+              class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0"
+            >
+              <p class="text-center text-sm leading-loose md:text-left">
+                Built by
+                <a
+                  href="https://github.com/dassaswat"
+                  target="_blank"
+                  rel="noreferrer"
+                  class="font-medium underline underline-offset-4"
+                >
+                  saswat.
+                </a>
+                The source code is available on
+                <a
+                  href=""
+                  target="_blank"
+                  rel="noreferrer"
+                  class="font-medium underline underline-offset-4"
+                >
+                  GitHub
+                </a>
+                .
+              </p>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

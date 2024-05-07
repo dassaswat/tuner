@@ -1,0 +1,29 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@builder.io/partytown": "^0.10.2",
+    "@total-typescript/ts-reset": "^0.5.1",
+    "@vitejs/plugin-legacy": "^5.3.2",
+    "autoprefixer": "^10.4.19",
+    "cssnano": "^7.0.1",
+    "postcss": "^8.4.38",
+    "prettier-plugin-tailwindcss": "^0.5.14",
+    "sass": "^1.76.0",
+    "tailwindcss": "^3.4.3",
+    "terser": "^5.31.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "@material-tailwind/html": "^2.2.2",
+    "@spotify/web-api-ts-sdk": "^1.2.0"
+  }
+}
