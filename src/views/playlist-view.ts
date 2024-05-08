@@ -59,7 +59,7 @@ export class PlaylistView {
     stepElement.textContent = '';
     stepElement.textContent = step;
     progressElement.classList.remove('w-0', 'w-1/4', 'w-2/4', 'w-3/4');
-    progressElement.classList.add(`w-${progress}`);
+    progressElement.classList.add(`w-${progress === '1' ? 'full' : progress}`);
   }
 
   modifyContentHeading(heading: string) {
