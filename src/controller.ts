@@ -273,7 +273,9 @@ export async function init() {
     views.playlistListing.addHashChangeHandler(onHashChange);
     const currentUser = await models.getCurrentUserProfile();
     let user = await models.checkCurrentUserInDB(currentUser.id);
-    if (!user) user = await models.addCurrentUserToDB(currentUser.id);
+    if (!user) {
+      user = await models.addCurrentUserToDB(currentUser.id);
+    }
     if (!user) {
       views.notification.render('error', {
         description: 'Failed to fetch user.',
