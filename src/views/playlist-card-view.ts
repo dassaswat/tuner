@@ -1,7 +1,7 @@
 import { PlaylistCardInfo } from '../types';
 
 export class PlaylistCardView {
-  render(playlistInfo?: PlaylistCardInfo, hideOnMobile = true) {
+  render(playlistInfo?: PlaylistCardInfo) {
     const playlistCardElement = document.querySelector('#playlist-card');
     if (!playlistCardElement) return;
     playlistCardElement.innerHTML = '';
@@ -16,13 +16,13 @@ export class PlaylistCardView {
 
     playlistCardElement.insertAdjacentHTML(
       'afterbegin',
-      this.getMarkupForPlaylistCard(playlistInfo, hideOnMobile),
+      this.getMarkupForPlaylistCard(playlistInfo),
     );
   }
 
   private getMarkupForPlaylistCardSkeleton(): string {
     return `
-    <div class="hidden w-80 rounded-xl bg-[#1c1917] bg-clip-border shadow-md md:order-2 lg:block">
+    <div class="w-80 rounded-xl bg-[#1c1917] bg-clip-border shadow-md md:order-2">
         <div class="relative h-48 animate-pulse overflow-hidden rounded-xl bg-gray-500 bg-clip-border"></div>
         <div class="p-6">
             <div class="flex justify-between pb-3">
@@ -43,12 +43,9 @@ export class PlaylistCardView {
     `;
   }
 
-  private getMarkupForPlaylistCard(
-    playlistInfo: PlaylistCardInfo,
-    hideOnMobile: boolean,
-  ): string {
+  private getMarkupForPlaylistCard(playlistInfo: PlaylistCardInfo): string {
     return `
-    <div class="${hideOnMobile ? 'hidden' : ''} w-80 rounded-xl bg-[#1c1917] bg-clip-border shadow-md md:order-2 lg:block">
+    <div class="w-80 rounded-xl bg-[#1c1917] bg-clip-border shadow-md lg:order-2 ">
         <div class="relative h-48 overflow-hidden rounded-xl">
             <img
             src=${playlistInfo.image}

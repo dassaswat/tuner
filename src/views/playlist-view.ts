@@ -51,14 +51,14 @@ export class PlaylistView {
     });
   }
 
-  showProgress(step: string, progress: '0' | '1/4' | '2/4' | '3/4' | '4/4') {
+  showProgress(step: string, progress: '0' | '1/4' | '2/4' | '3/4' | '1') {
     const progressElement = document.querySelector('#progress');
     const stepElement = document.querySelector('#step');
     if (!progressElement) return;
     if (!stepElement) return;
     stepElement.textContent = '';
     stepElement.textContent = step;
-    progressElement.classList.remove('w-0', 'w-1/4', 'w-2/4', 'w-3/4', 'w-4/4');
+    progressElement.classList.remove('w-0', 'w-1/4', 'w-2/4', 'w-3/4');
     progressElement.classList.add(`w-${progress}`);
   }
 
@@ -121,17 +121,17 @@ export class PlaylistView {
   ): string {
     return `
     <div class="mx-auto mt-10 flex flex-col items-center justify-center gap-4 md:gap-16 lg:flex-row">
-      <div class="max-w-md md:order-1">
+      <div class="max-w-md lg:order-1">
         <h3 id="playlist-main-heading" class="text-xl font-bold md:text-2xl">
           ${isCreatedByTuner ? config.playlistPage.mainHeadingTuned : config.playlistPage.mainHeadingDefault}
         </h3>
-        <p id="playlist-main-description" class="mt-2 text-base text-gray-400 md:text-lg">${config.playlistPage.mainDescription}</p>
+        <p id="playlist-main-description" class="mt-2 text-base text-gray-400 md:text-lg">${config.playlistPage.mainDescription}<span class="block lg:hidden">For best experiance use this on desktop.</span></p>
         <div id="tuner">
           ${this.getMarkupForPlaylistTuneButton(playlistId, isCreatedByTuner)}
         </div>
         <hr class="mb-5 w-full border-gray-600 opacity-60" />
         <!-- Iframe Embed Player -->
-        <div id="player"></div>
+        <div class="hidden lg:block" id="player"></div>
       </div>
       <!-- Playlist Card -->
       <div id="playlist-card"></div>

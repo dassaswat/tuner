@@ -155,8 +155,6 @@ class Models {
       return await this.spotifySdk.playlists.createPlaylist(data.userId, {
         name: data.name,
         description: data.description,
-        public: data.setPublic,
-        collaborative: data.collaborative,
       });
     } catch (error) {
       throw new Error('Failed to create playlist');

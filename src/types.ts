@@ -5,8 +5,6 @@ export interface CreatePlaylist {
   userId: string;
   name: string;
   description: string;
-  setPublic: boolean;
-  collaborative: boolean;
 }
 
 export interface DefaultCreatePlaylistConfig {

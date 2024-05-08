@@ -86,8 +86,6 @@ async function onTunePlaylist(playlistId: string) {
         userId: currentUser.id,
         name: `${defaultPlaylistConfig.name} - Tuned by Tuner`,
         description: `${defaultPlaylistConfig.description}.`,
-        setPublic: defaultPlaylistConfig.public,
-        collaborative: defaultPlaylistConfig.collaborative,
       });
       createdPlaylist = true;
       await models.addTracksToPlaylist(newPlaylist.id, tunedPlaylist.uris);
@@ -124,7 +122,7 @@ async function onTunePlaylist(playlistId: string) {
 
     views.playlist.showProgress(
       `4/4 - Playlist created successfully. Redirecting in 5 seconds..`,
-      '4/4',
+      '1',
     );
     views.notification.render('success', {
       description: 'Playlist created successfully. Redirecting in 5 seconds..',
@@ -176,17 +174,18 @@ async function onHashChange() {
         ownerName: currentUser.display_name,
         ownerImage:
           currentUser.images.length === 0
-            ? generateRandomImageUserImageURL()
+            ? `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Rascal`
             : currentUser.images[0].url,
         totalTracks: savedTracks.total,
       };
 
-      views.playlistCard.render(data, false);
+      views.playlistCard.render(data);
       return;
     }
 
     views.spotifyPlayer.render(playlistId);
     views.spotifyPlayer.refreshIframe();
+
     const playlistInfo = await models.getPlaylistInfo(playlistId);
     const ownerInfo = await models.getAnyUserProfile(playlistInfo.owner.id);
     views.playlistCard.render({
@@ -198,7 +197,7 @@ async function onHashChange() {
       totalTracks: playlistInfo.tracks.total,
       ownerImage:
         ownerInfo.images.length === 0
-          ? generateRandomImageUserImageURL()
+          ? `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Rascal`
           : ownerInfo.images[0].url,
     });
   } catch (error) {
@@ -235,20 +234,6 @@ async function fetchPlaylists(offset: number) {
   return _playlists;
 }
 
-function generateRandomImageUserImageURL() {
-  const seeds = [
-    'Bubba',
-    'Kitty',
-    'Oliver',
-    'Mimi',
-    'Max',
-    'Rascal',
-    'Lola',
-    'Willow',
-  ];
-  const randomSeed = seeds[Math.floor(Math.random() * seeds.length)];
-  return `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${randomSeed}`;
-}
 async function listPlaylists(offset: number = 0) {
   try {
     views.header.render('listing');
@@ -258,7 +243,7 @@ async function listPlaylists(offset: number = 0) {
       name: user.display_name,
       image:
         user.images.length === 0
-          ? generateRandomImageUserImageURL()
+          ? `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Rascal`
           : user.images[0].url,
     });
     views.header.addLogoutHandler(onLogout);
