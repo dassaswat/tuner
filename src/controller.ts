@@ -157,8 +157,12 @@ async function onHashChange() {
     const isPlaylistInDB = await models.checkPlaylistInDB(playlistId);
     if (isPlaylistInDB) {
       views.playlist.render(playlistId, true);
+
+      views.playlist.scrollIntoView();
     } else {
       views.playlist.render(playlistId, false);
+
+      views.playlist.scrollIntoView();
     }
     views.playlistCard.render();
     views.playlist.addTunePlaylistHandler(onTunePlaylist);

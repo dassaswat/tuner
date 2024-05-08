@@ -30,6 +30,13 @@ export class PlaylistView {
     startProcessingButton.remove();
   }
 
+  scrollIntoView() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
+
   addPlaylistTuneButton(playlistId: string, isCreatedByTuner: boolean) {
     const tunerContainer = document.querySelector('#tuner');
     if (!tunerContainer) return;
