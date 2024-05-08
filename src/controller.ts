@@ -14,6 +14,10 @@ function onListingPageTunePlaylist(playlistId: string) {
   window.location.hash = `${playlistId}`;
 }
 
+async function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 // This function is called when the user clicks on the 'Tune Playlist' button on the playlist page
 async function onTunePlaylist(playlistId: string) {
   let createdPlaylist = false;
@@ -56,7 +60,20 @@ async function onTunePlaylist(playlistId: string) {
     );
 
     // Analyse and build the playlist - Third step
+    if (tracksIds.length === 0 || tracksIds.length < 5) {
+      views.notification.render('error', {
+        description: `${tracksIds.length === 0 ? 'No tracks found in the playlist.' : 'Not enough tracks to tune the playlist.'}`,
+      });
+      views.playlist.addPlaylistTuneButton(playlistId, playlistInDB);
+      views.playlist.addTunePlaylistHandler(onTunePlaylist);
+      views.playlist.modifyContentHeading(
+        config.playlistPage.mainHeadingDefault,
+      );
+      views.playlist.modifyContent(config.playlistPage.mainDescription);
+      return;
+    }
     const tunedPlaylist = await models.getTunedPlaylist(tracksIds);
+    await sleep(10000);
     views.playlist.showProgress(
       `3/4 - Analysis complete. Creating playlist..`,
       '3/4',
@@ -67,8 +84,8 @@ async function onTunePlaylist(playlistId: string) {
     if (!isPlaylistInDB) {
       const newPlaylist = await models.createPlaylist({
         userId: currentUser.id,
-        name: defaultPlaylistConfig.name,
-        description: `${defaultPlaylistConfig.description}. This playlist was tuned by Tuner`,
+        name: `${defaultPlaylistConfig.name} - Tuned by Tuner`,
+        description: `${defaultPlaylistConfig.description}.`,
         setPublic: defaultPlaylistConfig.public,
         collaborative: defaultPlaylistConfig.collaborative,
       });
@@ -110,7 +127,7 @@ async function onTunePlaylist(playlistId: string) {
       '4/4',
     );
     views.notification.render('success', {
-      description: 'Playlist created successfully. Redirecting in 10 seconds..',
+      description: 'Playlist created successfully. Redirecting in 5 seconds..',
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -131,6 +148,7 @@ async function onTunePlaylist(playlistId: string) {
 
 async function onHashChange() {
   try {
+    views.spotifyPlayer.remove();
     const playlistId = window.location.hash.slice(1);
     if (playlistId === '') {
       listPlaylists(views.pagination.currentOffset);
@@ -156,15 +174,19 @@ async function onHashChange() {
         image: 'https://misc.scdn.co/liked-songs/liked-songs-640.png',
         externalUrl: 'https://open.spotify.com/collection/tracks',
         ownerName: currentUser.display_name,
-        ownerImage: currentUser.images[0].url,
+        ownerImage:
+          currentUser.images.length === 0
+            ? generateRandomImageUserImageURL()
+            : currentUser.images[0].url,
         totalTracks: savedTracks.total,
       };
-      views.spotifyPlayer.remove();
+
       views.playlistCard.render(data, false);
       return;
     }
 
     views.spotifyPlayer.render(playlistId);
+    views.spotifyPlayer.refreshIframe();
     const playlistInfo = await models.getPlaylistInfo(playlistId);
     const ownerInfo = await models.getAnyUserProfile(playlistInfo.owner.id);
     views.playlistCard.render({
@@ -174,7 +196,10 @@ async function onHashChange() {
       image: playlistInfo.images[0].url,
       ownerName: ownerInfo.display_name,
       totalTracks: playlistInfo.tracks.total,
-      ownerImage: ownerInfo.images[0].url,
+      ownerImage:
+        ownerInfo.images.length === 0
+          ? generateRandomImageUserImageURL()
+          : ownerInfo.images[0].url,
     });
   } catch (error) {
     if (error instanceof Error)
@@ -195,7 +220,7 @@ async function fetchPlaylists(offset: number) {
       isTunedByTuner: Boolean(await models.checkPlaylistInDB(item.id)),
       image:
         item.images === null
-          ? `https://random-image-pepebigotes.vercel.app/api/random-image`
+          ? `https://source.unsplash.com/random/1920x1080/?music,instruments,guitar,party`
           : item.images[0].url,
     };
   });
@@ -210,13 +235,31 @@ async function fetchPlaylists(offset: number) {
   return _playlists;
 }
 
+function generateRandomImageUserImageURL() {
+  const seeds = [
+    'Bubba',
+    'Kitty',
+    'Oliver',
+    'Mimi',
+    'Max',
+    'Rascal',
+    'Lola',
+    'Willow',
+  ];
+  const randomSeed = seeds[Math.floor(Math.random() * seeds.length)];
+  return `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${randomSeed}`;
+}
 async function listPlaylists(offset: number = 0) {
   try {
     views.header.render('listing');
     const user = await models.getCurrentUserProfile();
+
     views.header.render('listing', {
       name: user.display_name,
-      image: user.images[0].url,
+      image:
+        user.images.length === 0
+          ? generateRandomImageUserImageURL()
+          : user.images[0].url,
     });
     views.header.addLogoutHandler(onLogout);
 
@@ -271,6 +314,7 @@ export async function init() {
   if (hasActiveAuth()) {
     listPlaylists();
     views.playlistListing.addHashChangeHandler(onHashChange);
+
     const currentUser = await models.getCurrentUserProfile();
     let user = await models.checkCurrentUserInDB(currentUser.id);
     if (!user) {

@@ -15,17 +15,17 @@ export class SpotifyPlayerView {
     playerElement.remove();
   }
 
+  refreshIframe() {
+    const iframe = document.querySelector(
+      '#spotify-player',
+    ) as HTMLIFrameElement;
+    if (!iframe) return;
+
+    iframe.src = iframe.src;
+  }
+
   private getMarkupForSpotifyPlayer(playlistId: string): string {
     return `
-    <iframe
-        style="border-radius: 12px"
-        src="https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator"
-        width="100%"
-        height="152"
-        frameborder="0"
-        allowfullscreen=""
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy"
-    ></iframe>`;
+    <iframe id="spotify-player"  style="border-radius:12px" src="https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator" width="100%" height="152" frameBorder="0"  allow="encrypted-media" loading="lazy"></iframe>`;
   }
 }
