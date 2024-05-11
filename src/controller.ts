@@ -23,8 +23,8 @@ async function onTunePlaylist(playlistId: string) {
   let createdPlaylist = false;
   let playlistInDB = false;
   try {
-    const isPlaylistInDB = await models.checkPlaylistInDB(playlistId);
-    if (isPlaylistInDB) playlistInDB = true;
+    const isPlaylistInDB = await models.checkPlaylistsInDB([playlistId]);
+    if (isPlaylistInDB && isPlaylistInDB.length === 1) playlistInDB = true;
 
     views.playlist.modifyContentHeading(
       config.playlistPage.mainHeadingProcessing,
@@ -72,8 +72,12 @@ async function onTunePlaylist(playlistId: string) {
       views.playlist.modifyContent(config.playlistPage.mainDescription);
       return;
     }
-    const tunedPlaylist = await models.getTunedPlaylist(tracksIds);
-    await sleep(10000);
+    const tunedPlaylist = await models.getTunedPlaylist(
+      `${playlistId === 'user-saved-tracks' ? `${currentUser.id}_saved_tracks` : playlistId}`,
+      tracksIds,
+    );
+
+    await sleep(5000);
     views.playlist.showProgress(
       `3/4 - Analysis complete. Creating playlist..`,
       '3/4',
@@ -81,7 +85,7 @@ async function onTunePlaylist(playlistId: string) {
 
     // Create the playlist - Fourth step
     let _playlistsIdToRedirect = playlistId;
-    if (!isPlaylistInDB) {
+    if (!playlistInDB) {
       const newPlaylist = await models.createPlaylist({
         userId: currentUser.id,
         name: `${defaultPlaylistConfig.name} - Tuned by Tuner`,
@@ -154,14 +158,12 @@ async function onHashChange() {
     }
 
     views.header.render('playlist');
-    const isPlaylistInDB = await models.checkPlaylistInDB(playlistId);
-    if (isPlaylistInDB) {
+    const isPlaylistInDB = await models.checkPlaylistsInDB([playlistId]);
+    if (isPlaylistInDB && isPlaylistInDB.length === 1) {
       views.playlist.render(playlistId, true);
-
       views.playlist.scrollIntoView();
     } else {
       views.playlist.render(playlistId, false);
-
       views.playlist.scrollIntoView();
     }
     views.playlistCard.render();
@@ -215,12 +217,17 @@ async function onHashChange() {
 async function fetchPlaylists(offset: number) {
   views.playlistListing.render();
   const _playlists = await models.getCurrentUserPlaylists(offset);
+  const toCheck = _playlists.items.map((item) => item.id);
+  const inDB = await models.checkPlaylistsInDB(toCheck);
   const playlists = _playlists.items.map(async (item) => {
     return {
       id: item.id,
       name: item.name,
       description: item.description,
-      isTunedByTuner: Boolean(await models.checkPlaylistInDB(item.id)),
+      // Fix this - DO NOT make a DB call for each playlist, instead fetch all playlists and then check
+      isTunedByTuner: Boolean(
+        inDB?.find((playlist) => playlist.spotify_playlist_id === item.id),
+      ),
       image:
         item.images === null
           ? `https://source.unsplash.com/random/1920x1080/?music,instruments,guitar,party`

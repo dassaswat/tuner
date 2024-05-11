@@ -64,6 +64,18 @@ class Models {
     }
   }
 
+  async getCurrentUserTopTracks() {
+    try {
+      return await this.spotifySdk.currentUser.topItems(
+        'tracks',
+        'medium_term',
+        50,
+      );
+    } catch (error) {
+      throw new Error('Failed to get current user top tracks');
+    }
+  }
+
   async getCurrentUserAllPlaylistsIds() {
     try {
       const playlistIds: string[] = [];
@@ -88,7 +100,7 @@ class Models {
 
   async checkCurrentUserInDB(userId: string) {
     try {
-      const response = await fetch(`${config.backendURL}/user/${userId}`);
+      const response = await fetch(`${config.backendURL}/users/${userId}`);
       if (response.ok) {
         return response.json() as Promise<StoredUser>;
       }
@@ -99,7 +111,7 @@ class Models {
 
   async addCurrentUserToDB(userId: string) {
     try {
-      const response = await fetch(`${config.backendURL}/user`, {
+      const response = await fetch(`${config.backendURL}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -129,6 +141,7 @@ class Models {
       const maxTracks = 50;
       const playlistData = await this.getPlaylistInfo(playlistId);
       const totalRequests = Math.ceil(playlistData.tracks.total / maxTracks);
+
       const tracksPromise = [];
       for (let i = 0; i < totalRequests; i++) {
         const promise = this.spotifySdk.playlists.getPlaylistItems(
@@ -143,7 +156,7 @@ class Models {
 
       const playlistTracks = await Promise.all(tracksPromise);
       return playlistTracks
-        .map((tracks) => tracks.items.map((track) => track.track.id))
+        .map((tracks) => tracks.items.map((track) => track.track?.id))
         .flat();
     } catch (error) {
       throw new Error('Failed to get playlist tracks');
@@ -201,13 +214,13 @@ class Models {
     }
   }
 
-  async checkPlaylistInDB(playlistId: string) {
+  async checkPlaylistsInDB(playlistIds: string[]) {
     try {
       const response = await fetch(
-        `${config.backendURL}/playlists/${playlistId}`,
+        `${config.backendURL}/playlists?ids=${playlistIds.join(',')}`,
       );
       if (response.ok) {
-        return response.json() as Promise<TunedPlaylistInfo>;
+        return response.json() as Promise<TunedPlaylistInfo[]>;
       }
     } catch (error) {
       throw new Error('Failed to check playlist in DB');
@@ -251,17 +264,32 @@ class Models {
     }
   }
 
-  async getTunedPlaylist(currentPlaylistTrackIds: string[]) {
+  async getTunedPlaylist(
+    spotifyPlaylistId: string,
+    currentPlaylistTrackIds: string[],
+  ) {
     try {
+      const topTracks = await this.getCurrentUserTopTracks();
+      const topTracksInCurrentPlaylist = topTracks.items.filter((track) => {
+        return currentPlaylistTrackIds.includes(track.id);
+      });
+      const indexes = topTracksInCurrentPlaylist.map((track) => {
+        return currentPlaylistTrackIds.indexOf(track.id);
+      });
+
       const tracksFeatures = await this.getAudioFeaturesOfTracks(
         currentPlaylistTrackIds,
       );
-      const response = await fetch(`${config.backendURL}/analyse`, {
+      const response = await fetch(`${config.backendURL}/tuner/tune_playlist`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(tracksFeatures),
+        body: JSON.stringify({
+          spotify_playlist_id: spotifyPlaylistId,
+          tracks_features: tracksFeatures,
+          seed_tracks: indexes.length > 0 ? indexes : null,
+        }),
       });
       return response.json() as Promise<TunedPlaylist>;
     } catch (error) {

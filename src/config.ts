@@ -9,6 +9,7 @@ const config = {
     'user-library-read',
     'playlist-modify-public',
     'playlist-modify-private',
+    'user-top-read',
   ],
   landingPage: {
     title: 'Tuner - The Intuitive Playlist Optimizer for Music Lovers',
