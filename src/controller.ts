@@ -23,6 +23,7 @@ async function onTunePlaylist(playlistId: string) {
   let createdPlaylist = false;
   let playlistInDB = false;
   try {
+    views.playlist.disableTunePlaylistButton();
     const isPlaylistInDB = await models.checkPlaylistsInDB([playlistId]);
     if (isPlaylistInDB && isPlaylistInDB.length === 1) playlistInDB = true;
 

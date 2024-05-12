@@ -92,6 +92,12 @@ export class PlaylistView {
     stepElement.textContent = step;
   }
 
+  disableTunePlaylistButton() {
+    const tunePlaylistButton = document.querySelector('#start-processing');
+    if (!tunePlaylistButton) return;
+    tunePlaylistButton.setAttribute('disabled', 'true');
+  }
+
   private getMarkupForPlaylistTuneButton(
     playlistId: string,
     isCreatedByTuner: boolean,
@@ -100,7 +106,7 @@ export class PlaylistView {
     <button
       id="start-processing"
       data-playlist-id="${playlistId}"
-      class="mb-5 mt-10 w-full rounded-lg bg-[#22c55e] px-6 py-3 text-center font-sans text-sm font-bold text-[#09090b] shadow-none transition-all hover:scale-105 hover:shadow-none focus:scale-105 focus:opacity-[0.85] focus:shadow-none active:scale-100 active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+      class=" mb-5 mt-10 w-full rounded-lg bg-[#22c55e] px-6 py-3 text-center font-sans text-sm font-bold text-[#09090b] shadow-none transition-all hover:scale-105 hover:shadow-none focus:scale-105 focus:opacity-[0.85] focus:shadow-none active:scale-100 active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
       type="button"
     >
       ${isCreatedByTuner ? 'Re-Tune Playlist' : 'Tune Playlist'}
