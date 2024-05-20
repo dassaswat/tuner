@@ -74,7 +74,7 @@ export class HeaderView {
         <div>
             <div class="mb-4 block h-6 w-56 animate-pulse rounded-full bg-gray-500 text-4xl font-bold md:text-4xl"></div>
             <p class="mt-2 text-base text-gray-500 md:text-lg dark:text-gray-400">
-                Loading the page, give us sec..
+                Loading the page, give us a sec..
             </p>
       </div>
       <span

@@ -90,7 +90,7 @@ async function onTunePlaylist(playlistId: string) {
       const newPlaylist = await models.createPlaylist({
         userId: currentUser.id,
         name: `${defaultPlaylistConfig.name} - Tuned by Tuner`,
-        description: `${defaultPlaylistConfig.description}.`,
+        description: `This playlist was tuned by Tuner. Hope you will have fun listening to ${tunedPlaylist.length} tracks in the playlist.`,
       });
       createdPlaylist = true;
       await models.addTracksToPlaylist(newPlaylist.id, tunedPlaylist.uris);
