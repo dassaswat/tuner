@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@material-tailwind/html": "^2.2.2",
-    "@spotify/web-api-ts-sdk": "^1.2.0"
+    "@spotify/web-api-ts-sdk": "^1.2.0",
+    "@vercel/speed-insights": "^1.0.12"
   }
 }
